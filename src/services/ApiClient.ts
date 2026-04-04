@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-// import { secureStoreService } from './SecureStoreService'; 
+import { secureStoreService } from './SecureStoreService'; 
 
 const BASE_URL = process.env.EXPO_PUBLIC_API_RESERVAS;
 const TOKEN_KEY = "auth_token";
@@ -19,8 +19,8 @@ class ApiClient {
     private async buildHeaders(useToken: boolean): Promise<AxiosRequestConfig["headers"]> {
         if (!useToken) return {};
         
-        // const token = await secureStoreService.get<string>(TOKEN_KEY);
-        // return token ? { Authorization: `Bearer ${token}` } : {};
+        const token = await secureStoreService.get<string>(TOKEN_KEY);
+        return token ? { Authorization: `Bearer ${token}` } : {};
         return {};
     }
 
