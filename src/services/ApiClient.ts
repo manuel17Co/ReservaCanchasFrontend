@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { secureStoreService } from './SecureStoreService'; 
+import { secureStoreService } from './SecureStoreService';
 
 const BASE_URL = process.env.EXPO_PUBLIC_API_RESERVAS;
 const TOKEN_KEY = "auth_token";
@@ -21,7 +21,6 @@ class ApiClient {
         
         const token = await secureStoreService.get<string>(TOKEN_KEY);
         return token ? { Authorization: `Bearer ${token}` } : {};
-        return {};
     }
 
     async get<T>(endpoint: string, useToken: boolean = false, config?: AxiosRequestConfig): Promise<T> {

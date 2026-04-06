@@ -1,9 +1,27 @@
 import { apiClient } from '@/src/services/ApiClient';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { CanchaDTO } from '../dtos/CanchaDTO';
 
+const ImagenConFallback = ({ source, style }: { source: any; style: any }) => {
+  const [hasError, setHasError] = useState(false);
+
+  return hasError ? (
+    <View style={[style, styles.placeholderContainer]}>
+      <Text style={styles.placeholderText}>Sin imagen</Text>
+    </View>
+  ) : (
+    <Image
+      source={source}
+      style={style}
+      onError={() => setHasError(true)}
+    />
+  );
+};
+
 export default function CanchasTab() {
+  const router = useRouter();
   const [canchas, setCanchas] = useState<CanchaDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,6 +41,11 @@ export default function CanchasTab() {
 
     fetchCanchas();
   }, []);
+
+  const handleCanchaPress = (cancha: CanchaDTO) => {
+    console.log("Navegando a cancha:", cancha.id);
+    router.push(`/(tabs)/(canchas)/${cancha.id}`);
+  };
 
   if (loading) {
     return (
@@ -46,7 +69,10 @@ export default function CanchasTab() {
         data={canchas}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View style={styles.canchaCard}>
+          <TouchableOpacity 
+            style={styles.canchaCard}
+            onPress={() => handleCanchaPress(item)}
+          >
             <ImagenConFallback source={{ uri: item.imagen }} style={styles.imagen} />
             <View style={styles.cardContent}>
               <Text style={styles.nombre}>{item.nombre}</Text>
@@ -59,7 +85,7 @@ export default function CanchasTab() {
                 {item.activa ? 'Disponible' : 'No disponible'}
               </Text>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
         ListEmptyComponent={
           <View style={styles.center}>
@@ -147,23 +173,3 @@ const styles = StyleSheet.create({
     color: 'red',
   },
 });
-
-const ImagenConFallback = ({ source, style }: { source: { uri: string }, style: any }) => {
-  const [hasError, setHasError] = useState(false);
-
-  if (hasError) {
-    return (
-      <View style={[style, styles.placeholderContainer]}>
-        <Text style={styles.placeholderText}>Imagen no disponible</Text>
-      </View>
-    );
-  }
-
-  return (
-    <Image
-      source={source}
-      style={style}
-      onError={() => setHasError(true)}
-    />
-  );
-};

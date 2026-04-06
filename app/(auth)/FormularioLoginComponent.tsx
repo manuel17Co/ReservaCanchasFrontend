@@ -1,13 +1,14 @@
+
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, ImageBackground, Keyboard, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { useAuth } from '../../src/context/AuthContext';
 import { LoginRequest, LoginResponse } from '../../src/dtos/LoginDTO';
 import { apiClient } from '../../src/services/ApiClient';
+import { secureStoreService } from '../../src/services/SecureStoreService';
 
 export default function FormularioLoginComponent() {
   const router = useRouter();
-  const { login } = useAuth();
+
 
   const [formulario, setFormulario] = useState<LoginRequest>({
     correo: '',
@@ -51,7 +52,7 @@ export default function FormularioLoginComponent() {
       );
 
       if (response.token) {
-        await login(response.token);
+        await secureStoreService.set("auth_token", response.token);
         Alert.alert("¡Bienvenido!", "Inicio de sesión exitoso.");
         router.replace("/(tabs)/(canchas)");
       }

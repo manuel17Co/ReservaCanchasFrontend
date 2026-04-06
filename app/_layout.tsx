@@ -1,14 +1,26 @@
-import { AuthProvider, useAuth } from "@/src/context/AuthContext";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
+import { secureStoreService } from "../src/services/SecureStoreService";
 
 SplashScreen.preventAutoHideAsync();
 
 function App() {
-  const { token, isLoading } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  const [token, setToken] = useState<string | null>(null);
+  useEffect(() => {
+    const loadToken = async () => {
+      try {
+        const stored = await secureStoreService.get<string>("auth_token");
+        setToken(stored);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadToken();
+  }, []);
 
   if (isLoading) {
     return (
@@ -48,9 +60,5 @@ export default function RootLayout() {
     return null;
   }
 
-  return (
-    <AuthProvider>
-      <App />
-    </AuthProvider>
-  );
+  return <App />;
 }
