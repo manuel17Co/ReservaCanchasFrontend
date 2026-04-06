@@ -3,6 +3,7 @@ import { useFonts } from "expo-font";
 import { Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { Text, View } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -26,6 +27,28 @@ function AuthRedirect() {
   return null;
 }
 
+function App() {
+  const { isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Cargando...</Text>
+      </View>
+    );
+  }
+
+  return (
+    <>
+      <AuthRedirect />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(tabs)" />
+      </Stack>
+    </>
+  );
+}
+
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     'ShadowIntoLight': require("@/assets/fonts/Schoolbell-Regular.ttf")
@@ -43,11 +66,7 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <AuthRedirect />
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(auth)" />
-        <Stack.Screen name="(tabs)" />
-      </Stack>
+      <App />
     </AuthProvider>
   );
 }

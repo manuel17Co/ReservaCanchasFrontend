@@ -53,7 +53,6 @@ export default function FormularioLoginComponent() {
       if (response.token) {
         await login(response.token);
         Alert.alert("¡Bienvenido!", "Inicio de sesión exitoso.");
-        router.replace('/(tabs)/(canchas)');
       }
 
     } catch (error: any) {
