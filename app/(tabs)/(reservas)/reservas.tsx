@@ -2,11 +2,13 @@ import { ReservaDTO } from "@/src/dtos/ReservaDTO";
 import { apiClient } from "@/src/services/ApiClient";
 import { useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
+
 import {
   ActivityIndicator,
   Alert,
   FlatList,
   RefreshControl,
+  TouchableOpacity,
   StyleSheet,
   Text,
   View,
@@ -56,6 +58,30 @@ export default function Reservas() {
     } finally {
       setRefrescando(false);
     }
+  };
+
+  const cancelarReserva = (id: number) => {
+    Alert.alert(
+      "Cancelar Reserva",
+      "¿Estás seguro de que deseas cancelar esta reserva?",
+      [
+        { text: "No", style: "cancel" },
+        {
+          text: "Sí, cancelar",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await apiClient.post(`/reservas/${id}/cancelar`, {}, true);
+              Alert.alert("Éxito", "Reserva cancelada correctamente");
+              cargarReservas();
+            } catch (error: any) {
+              console.error("Error cancelando reserva:", error);
+              Alert.alert("Error", error.response?.data?.message || "No se pudo cancelar la reserva");
+            }
+          }
+        }
+      ]
+    );
   };
 
   const getEstadoColor = (estado: string) => {
@@ -143,6 +169,14 @@ export default function Reservas() {
         <Text style={styles.fechaCreacion}>
           Reservado: {new Date(item.createdAt).toLocaleDateString()}
         </Text>
+        {item.estado !== "CANCELADA" && (
+          <TouchableOpacity
+            style={styles.botonCancelar}
+            onPress={() => cancelarReserva(item.id)}
+          >
+            <Text style={styles.textoBotonCancelar}>Cancelar Reserva</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -276,6 +310,20 @@ const styles = StyleSheet.create({
   fechaCreacion: {
     fontSize: 12,
     color: "#999",
+    marginBottom: 8,
+  },
+  botonCancelar: {
+    backgroundColor: "#dc3545",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  textoBotonCancelar: {
+    color: "#fff",
+    fontWeight: '600',
+    fontSize: 13,
   },
   centrado: {
     flex: 1,

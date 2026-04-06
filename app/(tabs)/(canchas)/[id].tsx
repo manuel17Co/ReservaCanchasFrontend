@@ -110,18 +110,10 @@ export default function CanchaDetalle() {
     }
 
     try {
-      // Calcular el total basado en el precio por hora de la cancha
-      const horaInicio = parseInt(horarioSeleccionado.horaInicio.split(":")[0]);
-      const horaFin = parseInt(horarioSeleccionado.horaFin.split(":")[0]);
-      const horas = horaFin - horaInicio;
-      const totalPago = horas * cancha.precioHora;
-
       // Crear la reserva en el backend
       const reservaData = {
-        canchaId: cancha.id,
+        horarioId: horarioSeleccionado.id,
         fecha: fechaSeleccionada,
-        horaInicio: horarioSeleccionado.horaInicio,
-        horaFin: horarioSeleccionado.horaFin,
       };
 
       console.log("Creando reserva:", reservaData);
@@ -298,21 +290,25 @@ export default function CanchaDetalle() {
                     key={horario.id}
                     style={[
                       styles.horarioOption,
-                      horarioSeleccionado?.id === horario.id && styles.horarioOptionActivo
+                      horarioSeleccionado?.id === horario.id && styles.horarioOptionActivo,
+                      !horario.disponible && styles.horarioDeshabilitado
                     ]}
                     onPress={() => setHorarioSeleccionado(horario)}
+                    disabled={!horario.disponible}
                   >
                     <Text style={[
                       styles.horarioTexto,
-                      horarioSeleccionado?.id === horario.id && styles.horarioTextoActivo
+                      horarioSeleccionado?.id === horario.id && styles.horarioTextoActivo,
+                      !horario.disponible && styles.horarioTextoDeshabilitado
                     ]}>
                       {horario.horaInicio}
                     </Text>
                     <Text style={[
                       styles.horarioFin,
-                      horarioSeleccionado?.id === horario.id && styles.horarioFinActivo
+                      horarioSeleccionado?.id === horario.id && styles.horarioFinActivo,
+                      !horario.disponible && styles.horarioFinDeshabilitado
                     ]}>
-                      {horario.horaFin}
+                      {horario.disponible ? horario.horaFin : 'No disponible'}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -631,6 +627,16 @@ const styles = StyleSheet.create({
   },
   horarioFinActivo: {
     color: '#fff',
+  },
+  horarioDeshabilitado: {
+    backgroundColor: '#e0e0e0',
+    opacity: 0.6,
+  },
+  horarioTextoDeshabilitado: {
+    color: '#999',
+  },
+  horarioFinDeshabilitado: {
+    color: '#ccc',
   },
   sinHorarios: {
     fontSize: 13,
