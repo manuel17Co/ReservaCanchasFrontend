@@ -55,6 +55,7 @@ export default function FormularioLoginComponent() {
         await secureStoreService.set("auth_token", response.token);
         Alert.alert("¡Bienvenido!", "Inicio de sesión exitoso.");
         router.replace("/(tabs)/(canchas)");
+        return;
       }
 
     } catch (error: any) {
