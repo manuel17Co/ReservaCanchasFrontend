@@ -1,29 +1,18 @@
-import { AuthProvider, useAuth } from "@/src/context/AuthContext";
 import { useFonts } from "expo-font";
-import { Stack, useRouter, useSegments } from "expo-router";
+import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 
 SplashScreen.preventAutoHideAsync();
 
-function AuthRedirect() {
-  const { token, isLoading } = useAuth();
-  const segments = useSegments();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (isLoading) return;
-
-    const inAuthGroup = segments[0] === "(auth)";
-
-    if (!token && !inAuthGroup) {
-      router.replace("/(auth)/FormularioLoginComponent");
-    } else if (token && inAuthGroup) {
-      router.replace("/(tabs)/(canchas)");
-    }
-  }, [token, isLoading, segments]);
-
-  return null;
+function App() {
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    </Stack>
+  );
 }
 
 export default function RootLayout() {
@@ -41,13 +30,5 @@ export default function RootLayout() {
     return null;
   }
 
-  return (
-    <AuthProvider>
-      <AuthRedirect />
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(auth)" />
-        <Stack.Screen name="(tabs)" />
-      </Stack>
-    </AuthProvider>
-  );
+  return <App />;
 }
