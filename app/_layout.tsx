@@ -1,34 +1,14 @@
 import { AuthProvider, useAuth } from "@/src/context/AuthContext";
 import { useFonts } from "expo-font";
-import { Stack, useRouter, useSegments } from "expo-router";
+import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { Text, View } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 
-function AuthRedirect() {
-  const { token, isLoading } = useAuth();
-  const segments = useSegments();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (isLoading) return;
-
-    const inAuthGroup = segments[0] === "(auth)";
-
-    if (!token && !inAuthGroup) {
-      router.replace("/(auth)/FormularioLoginComponent");
-    } else if (token && inAuthGroup) {
-      router.replace("/(tabs)/(canchas)");
-    }
-  }, [token, isLoading, segments]);
-
-  return null;
-}
-
 function App() {
-  const { isLoading } = useAuth();
+  const { token, isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -38,14 +18,18 @@ function App() {
     );
   }
 
-  return (
-    <>
-      <AuthRedirect />
+  if (!token) {
+    return (
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(auth)" />
-        <Stack.Screen name="(tabs)" />
       </Stack>
-    </>
+    );
+  }
+
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(tabs)" />
+    </Stack>
   );
 }
 
