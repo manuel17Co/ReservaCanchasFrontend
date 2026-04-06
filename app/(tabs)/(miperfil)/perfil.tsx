@@ -1,9 +1,11 @@
-import { useAuth } from "@/src/context/AuthContext";
 import { useRouter } from "expo-router";
 import { Alert, Button, Text, View } from "react-native";
+import { secureStoreService } from "../../../src/services/SecureStoreService";
 
 export default function Perfil() {
-  const { logout } = useAuth();
+  const logout = async () => {
+    await secureStoreService.remove('auth_token');
+  };
   const router = useRouter();
 
   const handleLogout = async () => {

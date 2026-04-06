@@ -1,9 +1,12 @@
-import { useAuth } from '@/src/context/AuthContext';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import { secureStoreService } from '../../src/services/SecureStoreService';
 
 export default function TabsLayout() {
-  const { logout } = useAuth();
+  const logout = async () => {
+    await secureStoreService.remove('auth_token');
+    // Aquí puedes agregar lógica adicional si es necesario
+  };
 
   return (
     <Tabs

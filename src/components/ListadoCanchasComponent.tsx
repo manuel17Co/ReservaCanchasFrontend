@@ -102,7 +102,10 @@ export default function ListadoCanchasComponent() {
           renderItem={({ item }) => (
             <TouchableOpacity 
               style={styles.card}
-              onPress={() => router.push(`/(tabs)/(canchas)/${item.id}`)}
+              onPress={() => {
+                console.log("Navegando a cancha:", item.id);
+                router.push(`/(tabs)/(canchas)/${item.id}`);
+              }}
             >
               <Text style={styles.cardTitulo}>{item.nombre}</Text>
               <Text style={styles.cardDetalle}>{item.tipoCanchaNombre} • {item.sedeNombre}</Text>

@@ -4,7 +4,14 @@ export default function ReservasLayout() {
   return (
     <Stack
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: '#fff',
+        },
+        headerTintColor: '#007BFF',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
       }}
     >
       <Stack.Screen name="reservas" />
