@@ -5,4 +5,7 @@ export interface LoginRequest {
 
 export interface LoginResponse {
     token: string;
+    mensaje: string;
+    nombre: string; // Agregado
+    correo: string; // Agregado
 }
