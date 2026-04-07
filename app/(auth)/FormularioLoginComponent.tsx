@@ -51,12 +51,24 @@ export default function FormularioLoginComponent() {
         false
       );
 
+      // --- CAMBIO AQUÍ ---
       if (response.token) {
+        // 1. Guardar Token
         await secureStoreService.set("auth_token", response.token);
+        
+        // 2. Guardar datos del usuario para el perfil
+        if (response.nombre) {
+          await secureStoreService.set("user_name", response.nombre);
+        }
+        if (response.correo) {
+          await secureStoreService.set("user_email", response.correo);
+        }
+
         Alert.alert("¡Bienvenido!", "Inicio de sesión exitoso.");
         router.replace("/(tabs)/(canchas)");
         return;
       }
+      // -------------------
 
     } catch (error: any) {
       console.log("Error de login:", error);
